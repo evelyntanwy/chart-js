@@ -1,5 +1,6 @@
 const ctx = document.getElementById("myChart").getContext("2d");
 
+let delayed;
 // Gradient fill
 let gradient = ctx.createLinearGradient(0, 0, 0, 400);
 gradient.addColorStop(0, "rgba(58,123,213,1");
@@ -35,12 +36,24 @@ const data = {
 const config = {
   type: "line",
   data: data,
-  option: {
+  options: {
     radius: 5,
     hitRadius: 30, // this will allow it not to only hit at the exact radius point
     hoverRadius: 12,
     responsive: true,
-    tension: 1,
+    tension: 0.2,
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 300 + context.datasetIndex * 100;
+        }
+        return delay;
+      },
+    },
     // if we need to add additional info to the labels
     // scales : {
     //     y: {
